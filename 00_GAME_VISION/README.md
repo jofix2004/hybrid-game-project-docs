@@ -17,4 +17,3 @@ Tài liệu này định nghĩa game là gì và vì sao người chơi sẽ qua
 
 ## Ghi chú
 
-Mỗi file con hiện là một khung tài liệu ngắn bằng tiếng Việt để chờ hoàn thiện chi tiết.
