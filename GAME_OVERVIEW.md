@@ -232,7 +232,7 @@ Phiên sau được kéo bởi:
 - `phiên hiện tại` được nuôi bằng căng thẳng và tò mò
 - `phiên sau` được nuôi bằng tiến trình, chuẩn bị và lời hứa đi sâu hơn
 
-## Nếu muốn đọc sâu hơn thì nên mở gì?
+## Chi tiết
 
 Nếu muốn hiểu nhanh theo thứ tự hợp lý, nên đọc:
 
