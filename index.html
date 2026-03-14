@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HYBRID - GAME_PROJECT_DOCS</title>
+  <meta name="description" content="Bộ tài liệu thiết kế game HYBRID, đọc trực tiếp dưới dạng trang web tĩnh.">
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --panel-soft: #f7f9fc;
+      --line: #dde3ea;
+      --line-2: #edf1f5;
+      --text: #1a1d21;
+      --muted: #697586;
+      --link: #2457a6;
+      --active: #111111;
+      --active-bg: #eef3f8;
+      --code-bg: #f5f7fa;
+      --code-fg: #242b33;
+      --shadow: 0 10px 28px rgba(26, 34, 46, 0.06);
+      --radius-s: 10px;
+      --radius-m: 16px;
+      --radius-l: 22px;
+      --sidebar-w: 296px;
+      --font-body: "Roboto", "Segoe UI", Arial, sans-serif;
+      --font-title: "Roboto", "Segoe UI", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    body {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), transparent 28%),
+        var(--bg);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      width: var(--sidebar-w);
+      min-width: 0;
+      max-width: var(--sidebar-w);
+      height: 100vh;
+      overflow: auto;
+      padding: 24px 18px 30px;
+      background: #f7f9fb;
+      border-right: 1px solid var(--line);
+    }
+
+    .brand {
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.28rem;
+      line-height: 1.15;
+      font-family: var(--font-title);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand h1 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .toolbar {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .search {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-s);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+      transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    .search:focus {
+      border-color: #aabbd4;
+      box-shadow: 0 0 0 3px rgba(84, 122, 176, 0.12);
+      background: #ffffff;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--text);
+      border-radius: var(--radius-s);
+      padding: 10px 12px;
+      font: inherit;
+      cursor: pointer;
+      transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+    }
+
+    button:hover {
+      background: #ffffff;
+      border-color: #c5d0dd;
+    }
+
+    .access-box {
+      display: none;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-s);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .access-box.is-visible {
+      display: grid;
+      gap: 10px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav-group {
+      padding-top: 10px;
+      border-top: 1px solid var(--line-2);
+    }
+
+    .nav-group summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 5px 2px 9px;
+      cursor: pointer;
+      list-style: none;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .nav-group summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .nav-group summary::after {
+      content: "";
+      flex: 0 0 auto;
+      width: 8px;
+      height: 8px;
+      margin-top: -2px;
+      border-right: 1.6px solid currentColor;
+      border-bottom: 1.6px solid currentColor;
+      transform: rotate(45deg);
+      transition: transform 140ms ease;
+      opacity: 0.95;
+    }
+
+    .nav-group[open] summary::after {
+      transform: rotate(225deg);
+      margin-top: 2px;
+    }
+
+    .nav-group-title {
+      min-width: 0;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .nav-group ul {
+      list-style: none;
+      margin: 0;
+      padding: 0 0 8px 0;
+    }
+
+    .nav-group li + li {
+      margin-top: 2px;
+    }
+
+    .nav-group a {
+      display: block;
+      padding: 8px 12px 8px 14px;
+      border-left: 2px solid transparent;
+      border-radius: 0 var(--radius-s) var(--radius-s) 0;
+      color: var(--text);
+      text-decoration: none;
+      line-height: 1.42;
+      font-size: 0.93rem;
+      overflow-wrap: anywhere;
+      transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+    }
+
+    .nav-group a:hover {
+      background: rgba(255, 255, 255, 0.78);
+      border-left-color: #c5d0dd;
+    }
+
+    .nav-group a.is-active {
+      background: var(--active-bg);
+      color: var(--active);
+      border-left-color: #5878a6;
+      font-weight: 700;
+    }
+
+    .nav-group a.is-secondary {
+      color: var(--muted);
+    }
+
+    .nav-group.is-current {
+      border-top-color: var(--line);
+    }
+
+    .nav-group.is-current summary {
+      color: var(--text);
+    }
+
+    .empty-state {
+      display: none;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.5;
+    }
+
+    .content {
+      min-width: 0;
+      padding: 28px 30px 64px;
+    }
+
+    .mobile-bar {
+      display: none;
+    }
+
+    .sidebar-backdrop {
+      display: none;
+    }
+
+    .doc-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 28px;
+      align-items: start;
+      max-width: 1380px;
+      margin: 0 auto;
+    }
+
+    .doc-card {
+      min-width: 0;
+      padding: 36px 40px 42px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius-l);
+    }
+
+    .doc-meta {
+      margin-bottom: 26px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .doc-meta-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .doc-meta-main {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .doc-meta h1 {
+      margin: 0 0 10px;
+      font-family: var(--font-title);
+      font-size: 2.3rem;
+      line-height: 1.02;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .doc-path {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      word-break: break-all;
+    }
+
+    .edit-button {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border-radius: 999px;
+    }
+
+    .edit-button svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+    }
+
+    .doc-body {
+      font-size: 1.03rem;
+      line-height: 1.78;
+    }
+
+    .doc-body h1,
+    .doc-body h2,
+    .doc-body h3,
+    .doc-body h4,
+    .doc-body h5,
+    .doc-body h6 {
+      margin-top: 1.7em;
+      margin-bottom: 0.48em;
+      font-family: var(--font-title);
+      line-height: 1.16;
+      scroll-margin-top: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .doc-body h1 { font-size: 2.02rem; }
+    .doc-body h2 { font-size: 1.56rem; }
+    .doc-body h3 { font-size: 1.24rem; }
+
+    .doc-body p,
+    .doc-body li {
+      margin-top: 0;
+      margin-bottom: 0.65em;
+    }
+
+    .doc-body ul,
+    .doc-body ol {
+      padding-left: 1.5em;
+      margin-top: 0;
+      margin-bottom: 1em;
+    }
+
+    .doc-body a {
+      color: var(--link);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.15em;
+    }
+
+    .doc-body code {
+      padding: 0.14em 0.38em;
+      border-radius: 5px;
+      background: var(--code-bg);
+      color: var(--code-fg);
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.94em;
+    }
+
+    .doc-body pre {
+      overflow: auto;
+      padding: 16px 18px;
+      border-radius: var(--radius-m);
+      background: #f6f8fb;
+      border: 1px solid var(--line-2);
+    }
+
+    .doc-body pre code {
+      padding: 0;
+      background: transparent;
+    }
+
+    .toc {
+      position: sticky;
+      top: 24px;
+      padding: 18px 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: 0 8px 20px rgba(26, 34, 46, 0.04);
+    }
+
+    .toc h2 {
+      margin: 0 0 12px;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .toc ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .toc li + li {
+      margin-top: 3px;
+    }
+
+    .toc a {
+      display: block;
+      color: var(--text);
+      text-decoration: none;
+      line-height: 1.38;
+      font-size: 0.93rem;
+      font-weight: 600;
+      padding: 6px 0;
+    }
+
+    .toc a[data-level="2"] {
+      font-weight: 700;
+    }
+
+    .toc a[data-level="3"] {
+      padding-left: 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .toc a[data-level="4"],
+    .toc a[data-level="5"],
+    .toc a[data-level="6"] {
+      padding-left: 26px;
+      font-size: 0.86rem;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .toc a:hover {
+      color: var(--text);
+    }
+
+    .auth-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.28);
+    }
+
+    .auth-modal.is-open {
+      display: flex;
+    }
+
+    .auth-dialog {
+      width: min(100%, 360px);
+      padding: 20px 20px 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      background: #ffffff;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+    }
+
+    .auth-dialog h2 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .auth-dialog p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .auth-form label {
+      display: grid;
+      gap: 6px;
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+
+    .auth-form input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .auth-error {
+      min-height: 1.2em;
+      color: #b42318;
+      font-size: 0.9rem;
+    }
+
+    .auth-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    #folder-input {
+      display: none;
+    }
+
+    @media (max-width: 1100px) {
+      body {
+        grid-template-columns: 1fr;
+      }
+
+      .mobile-bar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-m);
+        background: rgba(255, 255, 255, 0.94);
+        box-shadow: 0 6px 18px rgba(26, 34, 46, 0.04);
+      }
+
+      .menu-toggle {
+        padding: 8px 12px;
+      }
+
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 40;
+        width: min(86vw, var(--sidebar-w));
+        max-width: min(86vw, var(--sidebar-w));
+        height: 100vh;
+        transform: translateX(-100%);
+        transition: transform 160ms ease;
+        border-right: 1px solid var(--line);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
+      }
+
+      body.nav-open .sidebar {
+        transform: translateX(0);
+      }
+
+      .sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 30;
+        background: rgba(0, 0, 0, 0.24);
+      }
+
+      body.nav-open .sidebar-backdrop {
+        display: block;
+      }
+
+      .doc-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: static;
+        order: -1;
+        max-height: min(42vh, 360px);
+        overflow: auto;
+      }
+
+      .doc-meta-top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .edit-button {
+        width: fit-content;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .content {
+        padding: 16px 12px 40px;
+      }
+
+      .doc-card {
+        padding: 18px 16px 24px;
+      }
+
+      .toc {
+        padding: 14px 14px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+  <aside class="sidebar">
+    <div class="brand">
+      <h1><a href="#MUC_LUC.md">Mục lục</a></h1>
+    </div>
+
+    <div class="toolbar">
+      <input id="search" class="search" type="search" placeholder="Tìm nhanh...">
+      <div id="access-box" class="access-box">
+        <div id="access-text"></div>
+        <div>
+          <button id="pick-folder" type="button">Chọn thư mục GAME_PROJECT_DOCS</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="empty-state" class="empty-state">Không có tài liệu khớp bộ lọc hiện tại.</div>
+    <nav id="nav" class="nav" aria-label="Danh sách tài liệu"></nav>
+    <input id="folder-input" type="file" webkitdirectory directory multiple>
+  </aside>
+
+  <main class="content">
+    <div class="mobile-bar">
+      <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav">Mục lục</button>
+    </div>
+    <section class="doc-shell">
+      <article class="doc-card">
+        <div class="doc-meta">
+          <div class="doc-meta-top">
+            <div class="doc-meta-main">
+              <h1 id="doc-title">Đang tải...</h1>
+              <p id="doc-path" class="doc-path"></p>
+            </div>
+            <button id="edit-button" class="edit-button" type="button" aria-label="Chỉnh sửa" title="Chỉnh sửa">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 20h9"/>
+                <path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div id="doc-body" class="doc-body"></div>
+      </article>
+
+      <aside class="toc">
+        <h2>Trong trang</h2>
+        <ul id="toc"></ul>
+      </aside>
+    </section>
+  </main>
+
+  <div id="auth-modal" class="auth-modal" aria-hidden="true">
+    <div class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <h2 id="auth-title">Xác thực chỉnh sửa</h2>
+      <p>Nhập ID và mật khẩu để tiếp tục.</p>
+      <form id="auth-form" class="auth-form">
+        <label>
+          ID
+          <input id="auth-id" name="id" type="text" autocomplete="username">
+        </label>
+        <label>
+          Mật khẩu
+          <input id="auth-password" name="password" type="password" autocomplete="current-password">
+        </label>
+        <div id="auth-error" class="auth-error" aria-live="polite"></div>
+        <div class="auth-actions">
+          <button id="auth-cancel" type="button">Đóng</button>
+          <button type="submit">Xác nhận</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const DOC_ROOT_NAME = "GAME_PROJECT_DOCS";
+    const DOC_ROOT_ABS = "/d:/TrinhLaGiV2/document/GAME_PROJECT_DOCS/";
+    const DEFAULT_DOC = "GAME_OVERVIEW.md";
+
+    const searchInput = document.getElementById("search");
+    const navRoot = document.getElementById("nav");
+    const emptyState = document.getElementById("empty-state");
+    const accessBoxEl = document.getElementById("access-box");
+    const accessTextEl = document.getElementById("access-text");
+    const docTitleEl = document.getElementById("doc-title");
+    const docPathEl = document.getElementById("doc-path");
+    const docBodyEl = document.getElementById("doc-body");
+    const tocRoot = document.getElementById("toc");
+    const folderInput = document.getElementById("folder-input");
+    const menuToggle = document.getElementById("menu-toggle");
+    const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+    const editButton = document.getElementById("edit-button");
+    const authModal = document.getElementById("auth-modal");
+    const authForm = document.getElementById("auth-form");
+    const authIdInput = document.getElementById("auth-id");
+    const authPasswordInput = document.getElementById("auth-password");
+    const authError = document.getElementById("auth-error");
+    const authCancel = document.getElementById("auth-cancel");
+
+    const state = {
+      sourceMode: "fetch",
+      navGroups: [],
+      fileMap: new Map(),
+      docCache: new Map(),
+    };
+
+    function setNavOpen(nextOpen) {
+      document.body.classList.toggle("nav-open", nextOpen);
+      menuToggle.setAttribute("aria-expanded", nextOpen ? "true" : "false");
+    }
+
+    function setAuthOpen(nextOpen) {
+      authModal.classList.toggle("is-open", nextOpen);
+      authModal.setAttribute("aria-hidden", nextOpen ? "false" : "true");
+      if (nextOpen) {
+        authError.textContent = "";
+        authForm.reset();
+        requestAnimationFrame(() => authIdInput.focus());
+      }
+    }
+
+    function showAccessMessage(message) {
+      accessTextEl.textContent = message;
+      accessBoxEl.classList.add("is-visible");
+    }
+
+    function hideAccessMessage() {
+      accessTextEl.textContent = "";
+      accessBoxEl.classList.remove("is-visible");
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function slugify(text) {
+      return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\w\s-]/g, "")
+        .trim()
+        .replace(/[\s_-]+/g, "-")
+        .replace(/-+/g, "-") || "section";
+    }
+
+    function normalizeDocPath(rawPath, currentDoc = DEFAULT_DOC) {
+      if (!rawPath) return null;
+      let value = rawPath.trim();
+      value = value.replace(/\\/g, "/");
+      try {
+        value = decodeURIComponent(value);
+      } catch (_error) {
+        // ignore malformed URI pieces
+      }
+
+      if (/^https?:\/\//i.test(value)) {
+        return { type: "external", href: value, anchor: "" };
+      }
+
+      if (value.startsWith("#")) {
+        return { type: "doc", docId: currentDoc, anchor: value.slice(1) };
+      }
+
+      const absolutePrefix = DOC_ROOT_ABS.toLowerCase();
+      if (value.toLowerCase().startsWith(absolutePrefix)) {
+        value = value.slice(DOC_ROOT_ABS.length);
+      } else if (value.toLowerCase().startsWith("d:/trinhlagiv2/document/game_project_docs/")) {
+        value = value.slice("d:/TrinhLaGiV2/document/GAME_PROJECT_DOCS/".length);
+      }
+
+      const [pathPart, anchorPart] = value.split("#");
+      let resolvedPath = pathPart || "";
+
+      if (resolvedPath.startsWith("./") || resolvedPath.startsWith("../")) {
+        const currentParts = currentDoc.split("/");
+        currentParts.pop();
+        const stack = currentParts;
+        resolvedPath.split("/").forEach((part) => {
+          if (!part || part === ".") return;
+          if (part === "..") {
+            stack.pop();
+            return;
+          }
+          stack.push(part);
+        });
+        resolvedPath = stack.join("/");
+      }
+
+      resolvedPath = resolvedPath.replace(/^\/+/, "");
+      if (!resolvedPath.endsWith(".md")) {
+        return null;
+      }
+
+      return { type: "doc", docId: resolvedPath, anchor: anchorPart || "" };
+    }
+
+    function convertInline(text, currentDoc, headingMap) {
+      const placeholders = [];
+
+      function stash(fragment) {
+        placeholders.push(fragment);
+        return `@@PLACEHOLDER_${placeholders.length - 1}@@`;
+      }
+
+      let output = escapeHtml(text);
+
+      output = output.replace(/`([^`]+)`/g, (_match, code) => {
+        return stash(`<code>${escapeHtml(code)}</code>`);
+      });
+
+      output = output.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label, href) => {
+        const normalized = normalizeDocPath(href, currentDoc);
+        const renderedLabel = convertInline(label, currentDoc, headingMap);
+        if (!normalized) {
+          return stash(renderedLabel);
+        }
+        if (normalized.type === "external") {
+          return stash(`<a href="${escapeHtml(normalized.href)}" target="_blank" rel="noreferrer noopener">${renderedLabel}</a>`);
+        }
+        const anchor = normalized.anchor ? `::${encodeURIComponent(headingMap[normalized.anchor] || slugify(normalized.anchor))}` : "";
+        return stash(`<a href="#${encodeURIComponent(normalized.docId)}${anchor}">${renderedLabel}</a>`);
+      });
+
+      output = output.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      output = output.replace(/(^|[^\*])\*([^*]+)\*(?!\*)/g, "$1<em>$2</em>");
+
+      placeholders.forEach((fragment, index) => {
+        output = output.replace(`@@PLACEHOLDER_${index}@@`, fragment);
+      });
+
+      return output;
+    }
+
+    function buildHeadingMap(lines) {
+      const map = {};
+      const seen = new Map();
+      lines.forEach((line) => {
+        const match = line.match(/^(#{1,6})\s+(.+?)\s*$/);
+        if (!match) return;
+        const title = match[2].trim();
+        let slug = slugify(title);
+        const count = seen.get(slug) || 0;
+        seen.set(slug, count + 1);
+        if (count) slug = `${slug}-${count + 1}`;
+        map[title] = slug;
+      });
+      return map;
+    }
+
+    function markdownToHtml(markdown, currentDoc) {
+      const lines = markdown.replace(/\r\n/g, "\n").split("\n");
+      const headingMap = buildHeadingMap(lines);
+      const toc = [];
+
+      let htmlParts = [];
+      let paragraph = [];
+      let listStack = [];
+      let inCode = false;
+      let codeLang = "";
+      let codeLines = [];
+
+      function flushParagraph() {
+        if (!paragraph.length) return;
+        const joined = paragraph.map((part) => part.trim()).filter(Boolean).join(" ");
+        htmlParts.push(`<p>${convertInline(joined, currentDoc, headingMap)}</p>`);
+        paragraph = [];
+      }
+
+      function closeLists(targetIndent = -1) {
+        while (listStack.length && listStack[listStack.length - 1].indent >= targetIndent) {
+          const entry = listStack.pop();
+          htmlParts.push(`</${entry.tag}>`);
+        }
+      }
+
+      function flushCode() {
+        if (!inCode) return;
+        const classAttr = codeLang ? ` class="language-${escapeHtml(codeLang)}"` : "";
+        htmlParts.push(`<pre><code${classAttr}>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
+        inCode = false;
+        codeLang = "";
+        codeLines = [];
+      }
+
+      for (const rawLine of lines) {
+        const line = rawLine;
+
+        const codeFence = line.match(/^```(\w+)?\s*$/);
+        if (codeFence) {
+          flushParagraph();
+          closeLists();
+          if (inCode) {
+            flushCode();
+          } else {
+            inCode = true;
+            codeLang = codeFence[1] || "";
+            codeLines = [];
+          }
+          continue;
+        }
+
+        if (inCode) {
+          codeLines.push(rawLine);
+          continue;
+        }
+
+        const heading = line.match(/^(#{1,6})\s+(.+?)\s*$/);
+        if (heading) {
+          flushParagraph();
+          closeLists();
+          const level = heading[1].length;
+          const text = heading[2].trim();
+          const anchor = headingMap[text] || slugify(text);
+          htmlParts.push(`<h${level} id="${escapeHtml(anchor)}">${convertInline(text, currentDoc, headingMap)}</h${level}>`);
+          if (level === 2 || level === 3) {
+            toc.push({ level, title: text, anchor });
+          }
+          continue;
+        }
+
+        if (!line.trim()) {
+          flushParagraph();
+          closeLists();
+          continue;
+        }
+
+        const listItem = line.match(/^(\s*)([-*]|\d+\.)\s+(.+)$/);
+        if (listItem) {
+          flushParagraph();
+          const indent = listItem[1].length;
+          const marker = listItem[2];
+          const content = listItem[3];
+          const tag = /^\d+\.$/.test(marker) ? "ol" : "ul";
+
+          while (listStack.length && listStack[listStack.length - 1].indent > indent) {
+            htmlParts.push(`</${listStack.pop().tag}>`);
+          }
+
+          const current = listStack[listStack.length - 1];
+          if (!current || current.indent < indent || current.tag !== tag) {
+            htmlParts.push(`<${tag}>`);
+            listStack.push({ tag, indent });
+          }
+
+          htmlParts.push(`<li>${convertInline(content.trim(), currentDoc, headingMap)}</li>`);
+          continue;
+        }
+
+        paragraph.push(line);
+      }
+
+      flushParagraph();
+      closeLists();
+      flushCode();
+
+      return { html: htmlParts.join("\n"), toc };
+    }
+
+    function parseMucLuc(markdown) {
+      const lines = markdown.replace(/\r\n/g, "\n").split("\n");
+      const groups = [];
+      let currentGroup = null;
+
+      lines.forEach((line) => {
+        const heading = line.match(/^##\s+(.+?)\s*$/);
+        if (heading) {
+          if (currentGroup && currentGroup.items.length) groups.push(currentGroup);
+          currentGroup = { title: heading[1].trim(), items: [] };
+          return;
+        }
+
+        const item = line.match(/^- \[([^\]]+)\]\(([^)]+)\)\s*$/);
+        if (!item) return;
+        if (!currentGroup) return;
+        const normalized = normalizeDocPath(item[2], DEFAULT_DOC);
+        if (!normalized || normalized.type !== "doc") return;
+        currentGroup.items.push({
+          title: item[1].trim(),
+          path: normalized.docId,
+          secondary: /README\.md$/i.test(normalized.docId),
+        });
+      });
+
+      if (currentGroup && currentGroup.items.length) groups.push(currentGroup);
+      return groups;
+    }
+
+    function renderNav(filterText = "") {
+      const filter = filterText.trim().toLowerCase();
+      navRoot.innerHTML = "";
+      let visibleItems = 0;
+      const { docId: activeDocId } = parseHash();
+
+      state.navGroups.forEach((group) => {
+        const filtered = group.items.filter((item) => {
+          if (!filter) return true;
+          return item.title.toLowerCase().includes(filter) || item.path.toLowerCase().includes(filter);
+        });
+        if (!filtered.length) return;
+        visibleItems += filtered.length;
+
+        const section = document.createElement("details");
+        section.className = "nav-group";
+        const isCurrentGroup = filtered.some((item) => item.path === activeDocId);
+        if (isCurrentGroup) section.classList.add("is-current");
+        section.open = Boolean(filter) || isCurrentGroup || (activeDocId === DEFAULT_DOC && group.title === "Bắt đầu");
+
+        const summary = document.createElement("summary");
+        const title = document.createElement("span");
+        title.className = "nav-group-title";
+        title.textContent = group.title;
+        summary.appendChild(title);
+        section.appendChild(summary);
+
+        const list = document.createElement("ul");
+        filtered.forEach((item) => {
+          const li = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = `#${encodeURIComponent(item.path)}`;
+          link.dataset.docId = item.path;
+          link.textContent = item.title;
+          if (item.secondary) link.classList.add("is-secondary");
+          li.appendChild(link);
+          list.appendChild(li);
+        });
+        section.appendChild(list);
+        navRoot.appendChild(section);
+      });
+
+      emptyState.style.display = visibleItems ? "none" : "block";
+      syncActiveNav();
+    }
+
+    function syncActiveNav() {
+      const { docId } = parseHash();
+      document.querySelectorAll(".nav-group a").forEach((link) => {
+        link.classList.toggle("is-active", link.dataset.docId === docId);
+      });
+      document.querySelectorAll(".nav-group").forEach((group) => {
+        const hasActive = Boolean(group.querySelector("a.is-active"));
+        group.classList.toggle("is-current", hasActive);
+        if (hasActive) group.open = true;
+      });
+    }
+
+    function parseHash() {
+      const raw = window.location.hash.replace(/^#/, "");
+      if (!raw) return { docId: DEFAULT_DOC, anchor: "" };
+      const [docPart, anchorPart] = raw.split("::");
+      return {
+        docId: decodeURIComponent(docPart || DEFAULT_DOC),
+        anchor: anchorPart ? decodeURIComponent(anchorPart) : "",
+      };
+    }
+
+    async function readDoc(path) {
+      if (state.docCache.has(path)) return state.docCache.get(path);
+
+      let text = "";
+      if (state.sourceMode === "fetch") {
+        const response = await fetch(path, { cache: "no-store" });
+        if (!response.ok) throw new Error(`Không đọc được ${path}`);
+        text = await response.text();
+      } else {
+        const file = state.fileMap.get(path);
+        if (!file) throw new Error(`Không tìm thấy ${path} trong thư mục đã chọn`);
+        text = await file.text();
+      }
+
+      state.docCache.set(path, text);
+      return text;
+    }
+
+    async function renderDoc(docId, anchor = "") {
+      try {
+        const markdown = await readDoc(docId);
+        const rendered = markdownToHtml(markdown, docId);
+        const titleMatch = markdown.match(/^#\s+(.+)$/m);
+        docTitleEl.textContent = titleMatch ? titleMatch[1].trim() : docId.split("/").pop().replace(/\.md$/i, "");
+        docPathEl.textContent = docId;
+        docBodyEl.innerHTML = rendered.html;
+        renderToc(docId, rendered.toc);
+        syncActiveNav();
+
+        if (anchor) {
+          requestAnimationFrame(() => {
+            const target = document.getElementById(anchor) || document.getElementById(slugify(anchor));
+            if (target) {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          });
+        } else {
+          window.scrollTo({ top: 0, behavior: "auto" });
+        }
+      } catch (error) {
+        docTitleEl.textContent = "Không đọc được tài liệu";
+        docPathEl.textContent = docId;
+        docBodyEl.innerHTML = `<p>${escapeHtml(error.message || String(error))}</p>`;
+        tocRoot.innerHTML = "";
+      }
+    }
+
+    function renderToc(docId, tocItems) {
+      tocRoot.innerHTML = "";
+      if (!tocItems.length) {
+        const li = document.createElement("li");
+        li.textContent = "Tài liệu này chưa có mục con đủ lớn để tạo mục lục nhanh.";
+        tocRoot.appendChild(li);
+        return;
+      }
+
+      tocItems.forEach((item) => {
+        const li = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = `#${encodeURIComponent(docId)}::${encodeURIComponent(item.anchor)}`;
+        link.dataset.level = String(item.level);
+        link.textContent = item.title;
+        li.appendChild(link);
+        tocRoot.appendChild(li);
+      });
+    }
+
+    async function loadNavigationFromFetch() {
+      const response = await fetch("MUC_LUC.md", { cache: "no-store" });
+      if (!response.ok) throw new Error("Không đọc được MUC_LUC.md");
+      const markdown = await response.text();
+      state.docCache.set("MUC_LUC.md", markdown);
+      state.navGroups = parseMucLuc(markdown);
+      state.sourceMode = "fetch";
+      hideAccessMessage();
+      renderNav(searchInput.value);
+    }
+
+    function buildFileMap(fileList) {
+      const map = new Map();
+      for (const file of fileList) {
+        const relative = (file.webkitRelativePath || file.name).replace(/\\/g, "/");
+        const parts = relative.split("/");
+        const trimmed = parts.length > 1 ? parts.slice(1).join("/") : parts[0];
+        map.set(trimmed, file);
+      }
+      return map;
+    }
+
+    async function loadNavigationFromPickedFolder(fileList) {
+      state.fileMap = buildFileMap(fileList);
+      state.docCache.clear();
+      state.sourceMode = "folder";
+
+      const mucLuc = state.fileMap.get("MUC_LUC.md");
+      if (!mucLuc) {
+        throw new Error("Thư mục đã chọn không chứa MUC_LUC.md");
+      }
+
+      const markdown = await mucLuc.text();
+      state.docCache.set("MUC_LUC.md", markdown);
+      state.navGroups = parseMucLuc(markdown);
+      hideAccessMessage();
+      renderNav(searchInput.value);
+    }
+
+    async function init() {
+      try {
+        await loadNavigationFromFetch();
+      } catch (_error) {
+        showAccessMessage("Trình duyệt đang chặn đọc file cục bộ trực tiếp. Hãy chọn đúng thư mục GAME_PROJECT_DOCS để trang tiếp tục đọc live các file Markdown.");
+      }
+
+      const { docId, anchor } = parseHash();
+      renderDoc(docId, anchor);
+    }
+
+    document.getElementById("pick-folder").addEventListener("click", () => {
+      folderInput.click();
+    });
+
+    folderInput.addEventListener("change", async (event) => {
+      const files = Array.from(event.target.files || []);
+      if (!files.length) return;
+      try {
+        await loadNavigationFromPickedFolder(files);
+        const { docId, anchor } = parseHash();
+        renderDoc(docId, anchor);
+      } catch (error) {
+        showAccessMessage(error.message || String(error));
+      }
+    });
+
+    searchInput.addEventListener("input", (event) => {
+      renderNav(event.target.value);
+    });
+
+    menuToggle.addEventListener("click", () => {
+      setNavOpen(!document.body.classList.contains("nav-open"));
+    });
+
+    editButton.addEventListener("click", () => {
+      setAuthOpen(true);
+    });
+
+    authCancel.addEventListener("click", () => {
+      setAuthOpen(false);
+    });
+
+    authModal.addEventListener("click", (event) => {
+      if (event.target === authModal) {
+        setAuthOpen(false);
+      }
+    });
+
+    authForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void authPasswordInput.value;
+      authError.textContent = "ID không hợp lệ";
+      authIdInput.focus();
+      authIdInput.select();
+    });
+
+    sidebarBackdrop.addEventListener("click", () => {
+      setNavOpen(false);
+    });
+
+    navRoot.addEventListener("click", (event) => {
+      const link = event.target.closest("a");
+      if (!link) return;
+      if (window.innerWidth <= 1100) {
+        setNavOpen(false);
+      }
+    });
+
+    window.addEventListener("hashchange", () => {
+      const { docId, anchor } = parseHash();
+      renderDoc(docId, anchor);
+      if (window.innerWidth <= 1100) {
+        setNavOpen(false);
+      }
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setAuthOpen(false);
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>
