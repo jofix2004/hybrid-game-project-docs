@@ -27,7 +27,7 @@ Người chơi bắt đầu tay trắng trên một `đảo hoang`, dựng chỗ
 
 Game không bán cảm giác anh hùng sẵn mạnh, cũng không đi theo kiểu sandbox rộng vô hướng. Trục chính luôn là:
 
-`chuẩn bị -  đi xuống -  mạo hiểm -  mang được đồ về -  đi sâu hơn lần sau`
+`chuẩn bị -  đi xuống -  mạo hiểm -  mang được đồ về - nâng cấp trang bị/base - đi sâu hơn lần sau`
 
 ## Bối cảnh
 
